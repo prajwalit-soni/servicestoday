@@ -1,0 +1,73 @@
+@import "@fontsource/poppins/400.css";
+@import "@fontsource/poppins/700.css";
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+*,
+p,
+button,
+span,
+div,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Poppins", Arial, Helvetica, sans-serif !important;
+}
+
+body {
+  // background: var(--background);
+  color: var(--foreground);
+  font-family: "Poppins", Arial, Helvetica, sans-serif !important;
+}
+
+html,
+body {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+*::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+#devtools-indicator {
+  display: none;
+}
+
+/* Hide Next.js compilation indicator and build status */
+[aria-label="Recover"],
+[role="banner"] {
+  display: none !important;
+}
+
+/* Hide any element containing compilation text */
+
+/* The following selectors are not supported by all browsers and Next.js build tools. Remove or replace with a more compatible alternative if needed. */
+/* If you want to hide compilation indicators, target known classes or IDs instead. */
+
+#devtools-indicator {
+  display: none !important;
+}

@@ -1,0 +1,44 @@
+
+this should be the directory 
+
+
+src/
+├── app/
+│   ├── (admin)/
+│   │   ├── layout.tsx         <-- Wraps ALL pages below with the Sidebar + Topbar
+│   │   ├── page.tsx           <-- Dashboard Default Home (URL: /)
+│   │   │
+│   │   │── analytics/
+│   │   │   └── page.tsx       <-- Analytics Page (URL: /analytics)
+│   │   │── invoice/
+│   │   │   └── page.tsx       <-- Invoice Page (URL: /invoice)
+│   │   │── crm/
+│   │   │   └── page.tsx       <-- CRM Page (URL: /crm)
+│   │   │── blog/
+│   │   │   └── page.tsx       <-- Blog Page (URL: /blog)
+│   │   │
+│   │   │── widgets/
+│   │   │   ├── statistics/
+│   │   │   │   └── page.tsx   <-- Widgets Statistics Page (URL: /widgets/statistics)
+│   │   │   ├── data/
+│   │   │   │   └── page.tsx   <-- Widgets Data Page (URL: /widgets/data)
+│   │   │   └── chart/
+│   │   │       └── page.tsx   <-- Widgets Chart Page (URL: /widgets/chart)
+│   │   │
+│   │   └── apps/
+│   │       ├── users/
+│   │       │   └── page.tsx   <-- Applications Users Page (URL: /apps/users)
+│   │       ├── customer/
+│   │       │   └── page.tsx   <-- Applications Customer Page (URL: /apps/customer)
+│   │       └── chat/
+│   │           └── page.tsx   <-- Applications Chat Page (URL: /apps/chat)
+│   │
+│   ├── (front-end)/
+│   │   ├── layout.tsx         <-- Public Website Header/Footer Layout
+│   │   ├── landing/
+│   │   │   └── page.tsx       <-- Public Landing Home Page (URL: /landing)
+│   │   └── login/
+│   │       └── page.tsx       <-- Public Login Form Page (URL: /login)
+│   │
+│   ├── layout.tsx             <-- Global Root (ThemeRegistry, HTML/Body)
+│   └── page.tsx               <-- Root Proxy Redirector
