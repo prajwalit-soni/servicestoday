@@ -43,8 +43,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           flexGrow: 1,
           p: { xs: 2, sm: 3 },
           width: { 
+            xs: "100%",
             md: `calc(100% - ${desktopOpen ? DRAWER_WIDTH : MINI_DRAWER_WIDTH}px)` 
           },
+          maxWidth: "100%",
+          overflowX: "hidden",
           transition: "width 0.2s ease-in-out, margin 0.2s ease-in-out",
         }}
       >

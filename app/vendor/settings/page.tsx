@@ -28,6 +28,8 @@ import {
   DialogActions,
   LinearProgress,
   CircularProgress,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import Link from "next/link";
 
@@ -77,6 +79,8 @@ const AVAILABLE_SERVICES = [
 ];
 
 export default function VendorSettings() {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [activeStep, setActiveStep] = useState(0);
   const [isSubmitDialogOpen, setIsSubmitDialogOpen] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -348,34 +352,45 @@ export default function VendorSettings() {
         >
           {/* Progress Indicator Head */}
           <Box sx={{ borderBottom: "1px solid #EAEAEA", p: 3, bgcolor: "#FAFAFA" }}>
-            <Stepper activeStep={activeStep} alternativeLabel sx={{
-              "& .MuiStepLabel-label.Mui-active": { color: "#635BFF", fontWeight: 700 },
-              "& .MuiStepLabel-label.Mui-completed": { color: "#10b981", fontWeight: 600 },
-              "& .MuiStepIcon-root.Mui-active": { color: "#635BFF" },
-              "& .MuiStepIcon-root.Mui-completed": { color: "#10b981" }
-            }}>
-              {STEPS.map((step, idx) => (
-                <Step key={step.label}>
-                  <StepLabel StepIconComponent={() => (
-                    <Box sx={{ 
-                      width: 32, 
-                      height: 32, 
-                      borderRadius: "50%", 
-                      bgcolor: activeStep === idx ? "#635BFF" : activeStep > idx ? "#10B981" : "#E5E7EB", 
-                      color: "#FFFFFF",
-                      display: "flex", 
-                      alignItems: "center", 
-                      justifyContent: "center",
-                      boxShadow: activeStep === idx ? "0 0 10px rgba(99, 91, 255, 0.4)" : "none"
-                    }}>
-                      {activeStep > idx ? <CheckCircleIcon sx={{ fontSize: 18 }} /> : React.cloneElement(step.icon, { sx: { fontSize: 16 } })}
-                    </Box>
-                  )}>
-                    {step.label}
-                  </StepLabel>
-                </Step>
-              ))}
-            </Stepper>
+            {!isMobile ? (
+              <Stepper activeStep={activeStep} alternativeLabel sx={{
+                "& .MuiStepLabel-label.Mui-active": { color: "#635BFF", fontWeight: 700 },
+                "& .MuiStepLabel-label.Mui-completed": { color: "#10b981", fontWeight: 600 },
+                "& .MuiStepIcon-root.Mui-active": { color: "#635BFF" },
+                "& .MuiStepIcon-root.Mui-completed": { color: "#10b981" }
+              }}>
+                {STEPS.map((step, idx) => (
+                  <Step key={step.label}>
+                    <StepLabel StepIconComponent={() => (
+                      <Box sx={{ 
+                        width: 32, 
+                        height: 32, 
+                        borderRadius: "50%", 
+                        bgcolor: activeStep === idx ? "#635BFF" : activeStep > idx ? "#10B981" : "#E5E7EB", 
+                        color: "#FFFFFF",
+                        display: "flex", 
+                        alignItems: "center", 
+                        justifyContent: "center",
+                        boxShadow: activeStep === idx ? "0 0 10px rgba(99, 91, 255, 0.4)" : "none"
+                      }}>
+                        {activeStep > idx ? <CheckCircleIcon sx={{ fontSize: 18 }} /> : React.cloneElement(step.icon, { sx: { fontSize: 16 } })}
+                      </Box>
+                    )}>
+                      {step.label}
+                    </StepLabel>
+                  </Step>
+                ))}
+              </Stepper>
+            ) : (
+              <Box sx={{ textAlign: "center", py: 1 }}>
+                <Typography variant="subtitle1" fontWeight={700} color="#1F2937">
+                  {STEPS[activeStep].label}
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  Step {activeStep + 1} of {STEPS.length}
+                </Typography>
+              </Box>
+            )}
             <Box sx={{ mt: 2 }}>
               <LinearProgress 
                 variant="determinate" 

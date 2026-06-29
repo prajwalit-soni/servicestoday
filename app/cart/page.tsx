@@ -30,7 +30,20 @@ const CartPage = () => {
     updateQuantity,
     getTotalPrice,
     getTotalDiscount,
+    clearCart,
   } = useCartStore();
+
+  const [showSuccess, setShowSuccess] = React.useState(false);
+
+  const handleCheckout = () => {
+    setShowSuccess(true);
+  };
+
+  const handleCloseSuccess = () => {
+    setShowSuccess(false);
+    clearCart();
+    router.push("/");
+  };
 
   const subtotal = getTotalPrice() + getTotalDiscount();
   const discount = getTotalDiscount();
@@ -131,7 +144,7 @@ const CartPage = () => {
             </Button>
           </Box>
         ) : (
-          <Box sx={{ display: "flex", gap: 4 }}>
+          <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, gap: 4 }}>
             {/* Left - Cart Items */}
             <Box sx={{ flex: 1 }}>
               {/* Cart Items List */}
@@ -147,12 +160,12 @@ const CartPage = () => {
                       border: "1px solid #E3E3E3",
                     }}
                   >
-                    <Box sx={{ display: "flex", gap: 3 }}>
+                    <Box sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" }, gap: 3 }}>
                       {/* Image */}
                       <Box
                         sx={{
-                          width: 120,
-                          height: 120,
+                          width: { xs: "100%", sm: 120 },
+                          height: { xs: 160, sm: 120 },
                           borderRadius: "8px",
                           overflow: "hidden",
                           bgcolor: "#F5F5F5",
@@ -216,8 +229,10 @@ const CartPage = () => {
                         <Box
                           sx={{
                             display: "flex",
+                            flexDirection: { xs: "column", sm: "row" },
                             justifyContent: "space-between",
-                            alignItems: "center",
+                            alignItems: { xs: "flex-start", sm: "center" },
+                            gap: 2,
                           }}
                         >
                           {/* Price */}
@@ -346,8 +361,8 @@ const CartPage = () => {
             {/* Right - Payment Summary */}
             <Box
               sx={{
-                width: "400px",
-                position: "sticky",
+                width: { xs: "100%", md: "400px" },
+                position: { xs: "static", md: "sticky" },
                 top: 90,
                 height: "fit-content",
               }}
@@ -476,6 +491,7 @@ const CartPage = () => {
                   <Button
                     variant="contained"
                     fullWidth
+                    onClick={handleCheckout}
                     sx={{
                       bgcolor: "#6E42E5",
                       color: "white",
@@ -497,6 +513,191 @@ const CartPage = () => {
           </Box>
         )}
       </Container>
+
+      {/* Checkout Success Ribbon & Confetti Overlay Dialog */}
+      {showSuccess && (
+        <Box
+          sx={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            bgcolor: "rgba(15, 23, 42, 0.6)",
+            backdropFilter: "blur(8px)",
+            zIndex: 9999,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            p: 2,
+          }}
+        >
+          <style>{`
+            @keyframes popIn {
+              0% { transform: scale(0.8); opacity: 0; }
+              100% { transform: scale(1); opacity: 1; }
+            }
+            @keyframes floatUp {
+              0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
+              100% { transform: translateY(-20vh) rotate(360deg); opacity: 0; }
+            }
+            @keyframes checkmarkDraw {
+              0% { stroke-dashoffset: 48; }
+              100% { stroke-dashoffset: 0; }
+            }
+            @keyframes circleScale {
+              0% { transform: scale(0); opacity: 0; }
+              50% { transform: scale(1.2); }
+              100% { transform: scale(1); opacity: 1; }
+            }
+          `}</style>
+
+          {/* Floating Confetti / Ribbons */}
+          {Array.from({ length: 30 }).map((_, i) => {
+            const left = `${Math.random() * 100}%`;
+            const color = ["#FFD700", "#FF4500", "#FF1493", "#00FF7F", "#1E90FF", "#9400D3", "#FF69B4"][i % 7];
+            const delay = `${Math.random() * 2}s`;
+            const duration = `${Math.random() * 2 + 2}s`;
+            const width = `${Math.random() * 12 + 6}px`;
+            const height = `${Math.random() * 24 + 12}px`;
+            const borderRadius = i % 2 === 0 ? "4px" : "50%";
+            return (
+              <Box
+                key={i}
+                sx={{
+                  position: "absolute",
+                  left,
+                  bottom: -50,
+                  width,
+                  height,
+                  bgcolor: color,
+                  borderRadius,
+                  opacity: 0,
+                  transform: "rotate(45deg)",
+                  animation: `floatUp ${duration} linear ${delay} infinite`,
+                  pointerEvents: "none",
+                }}
+              />
+            );
+          })}
+
+          {/* Dialog Container */}
+          <Box
+            sx={{
+              bgcolor: "white",
+              borderRadius: "24px",
+              maxWidth: "500px",
+              width: "100%",
+              p: { xs: 4, md: 5 },
+              textAlign: "center",
+              boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
+              animation: "popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards",
+              position: "relative",
+              overflow: "hidden",
+              border: "1px solid #F3F4F6",
+            }}
+          >
+            {/* Multi-color Ribbon Bar on Top */}
+            <Box
+              sx={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                height: "6px",
+                background: "linear-gradient(90deg, #6E42E5 0%, #10B981 50%, #6E42E5 100%)",
+              }}
+            />
+
+            {/* Pulsing circle + drawing checkmark */}
+            <Box
+              sx={{
+                width: 90,
+                height: 90,
+                borderRadius: "50%",
+                bgcolor: "#ECFDF5",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                mx: "auto",
+                mb: 4,
+                boxShadow: "0 0 0 8px #F0FDF4",
+                animation: "circleScale 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards",
+              }}
+            >
+              <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M14 24L21 31L34 18"
+                  stroke="#10B981"
+                  strokeWidth="5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  style={{
+                    strokeDasharray: 48,
+                    strokeDashoffset: 48,
+                    animation: "checkmarkDraw 0.6s ease-in-out 0.6s forwards",
+                  }}
+                />
+              </svg>
+            </Box>
+
+            <Typography
+              variant="h5"
+              sx={{ fontWeight: 800, color: "#111827", mb: 1.5, fontSize: { xs: "22px", md: "26px" } }}
+            >
+              Order Confirmed!
+            </Typography>
+
+            <Typography
+              variant="body2"
+              sx={{ color: "#6B7280", lineHeight: 1.6, mb: 4, px: 2, fontSize: "14px" }}
+            >
+              Thank you for booking with **Shoptera**. Your service request has been confirmed and a booking reference has been sent to your email.
+            </Typography>
+
+            <Box
+              sx={{
+                bgcolor: "#F9FAFB",
+                borderRadius: "16px",
+                p: 2.5,
+                mb: 4,
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                border: "1px dashed #E5E7EB",
+              }}
+            >
+              <Typography sx={{ fontSize: "13px", color: "#6B7280", fontWeight: 500 }}>
+                Total Paid Amount
+              </Typography>
+              <Typography sx={{ fontSize: "18px", color: "#111827", fontWeight: 700 }}>
+                ₹{total}
+              </Typography>
+            </Box>
+
+            <Button
+              variant="contained"
+              fullWidth
+              onClick={handleCloseSuccess}
+              sx={{
+                bgcolor: "#6E42E5",
+                color: "white",
+                py: 1.8,
+                borderRadius: "12px",
+                textTransform: "none",
+                fontWeight: 700,
+                fontSize: "16px",
+                boxShadow: "0 10px 15px -3px rgba(110, 66, 229, 0.3)",
+                "&:hover": {
+                  bgcolor: "#5932C8",
+                },
+              }}
+            >
+              Explore More Services
+            </Button>
+          </Box>
+        </Box>
+      )}
     </Box>
   );
 };

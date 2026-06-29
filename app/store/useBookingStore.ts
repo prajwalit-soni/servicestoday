@@ -35,6 +35,6 @@ export const useBookingStore = create<BookingStore>()(
         bookings: state.bookings.map((b) => (b.id === id ? { ...b, status: newStatus } : b))
       })),
     }),
-    { name: "BookingStore", enabled: typeof window !== "undefined" }
+    { name: "BookingStore" }
   )
 );

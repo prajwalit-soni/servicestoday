@@ -55,10 +55,11 @@ import ShieldOutlinedIcon from "@mui/icons-material/ShieldOutlined";
 import VerifiedOutlinedIcon from "@mui/icons-material/VerifiedOutlined";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import LocalActivityOutlinedIcon from "@mui/icons-material/LocalActivityOutlined";
+import LogoutIcon from "@mui/icons-material/Logout";
 import { toast } from "react-toastify";
 
 export default function ProfilePage() {
-  const { user } = useAuthStore();
+  const { user, logout } = useAuthStore();
   const [activeTab, setActiveTab] = useState(0);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
@@ -304,100 +305,131 @@ export default function ProfilePage() {
             <Grid size={{ xs: 12, md: 3.5 }}>
               {!isMobile ? (
                 /* Sleek Vertical Navigation List on Desktop */
-                <Card sx={{ borderRadius: "20px", border: "1px solid #F1F5F9", boxShadow: "0 10px 30px rgba(0,0,0,0.02)", bgcolor: "#FFFFFF" }}>
-                  <CardContent sx={{ p: 2 }}>
-                    <Typography variant="subtitle2" sx={{ px: 2, py: 1, color: "#9CA3AF", fontWeight: 700, textTransform: "uppercase", fontSize: "0.675rem" }}>
-                      Navigation
-                    </Typography>
-                    <Tabs
-                      orientation="vertical"
-                      value={activeTab}
-                      onChange={(_, val) => setActiveTab(val)}
-                      sx={{
-                        "& .MuiTabs-indicator": { display: "none" },
-                        "& .MuiTab-root": {
-                          alignItems: "center",
+                <>
+                  <Card sx={{ borderRadius: "20px", border: "1px solid #F1F5F9", boxShadow: "0 10px 30px rgba(0,0,0,0.02)", bgcolor: "#FFFFFF" }}>
+                    <CardContent sx={{ p: 2 }}>
+                      <Typography variant="subtitle2" sx={{ px: 2, py: 1, color: "#9CA3AF", fontWeight: 700, textTransform: "uppercase", fontSize: "0.675rem" }}>
+                        Navigation
+                      </Typography>
+                      <Tabs
+                        orientation="vertical"
+                        value={activeTab}
+                        onChange={(_, val) => setActiveTab(val)}
+                        sx={{
+                          "& .MuiTabs-indicator": { display: "none" },
+                          "& .MuiTab-root": {
+                            alignItems: "center",
+                            justifyContent: "flex-start",
+                            textAlign: "left",
+                            minHeight: 52,
+                            borderRadius: "14px",
+                            textTransform: "none",
+                            fontWeight: 600,
+                            fontSize: "0.9rem",
+                            color: "#6B7280",
+                            px: 2.5,
+                            py: 1.5,
+                            mb: 0.5,
+                            display: "flex",
+                            flexDirection: "row",
+                            gap: 1.5,
+                            transition: "all 0.2s ease-in-out",
+                            "&.Mui-selected": {
+                              color: "#635BFF",
+                              backgroundColor: "#F5F3FF",
+                              "& .MuiSvgIcon-root": { color: "#635BFF" },
+                            },
+                            "& .MuiSvgIcon-root": { color: "#9CA3AF", transition: "color 0.2s" },
+                            "&:hover": {
+                              backgroundColor: "#FAFAFC",
+                              color: "#1F2937",
+                              "& .MuiSvgIcon-root": { color: "#1F2937" },
+                            },
+                          },
+                        }}
+                      >
+                        <Tab icon={<PersonOutlineIcon sx={{ fontSize: 20 }} />} iconPosition="start" label="Personal Details" />
+                        <Tab icon={<LocationOnOutlinedIcon sx={{ fontSize: 20 }} />} iconPosition="start" label="Saved Addresses" />
+                        <Tab icon={<HistoryIcon sx={{ fontSize: 20 }} />} iconPosition="start" label="Booking History" />
+                        <Tab icon={<SecurityIcon sx={{ fontSize: 20 }} />} iconPosition="start" label="Security & Password" />
+                      </Tabs>
+                    </CardContent>
+                  </Card>
+
+                  {/* Separate card for Logout on Web/Desktop */}
+                  <Card sx={{ borderRadius: "20px", border: "1px solid #F1F5F9", boxShadow: "0 10px 30px rgba(0,0,0,0.02)", bgcolor: "#FFFFFF", mt: 2 }}>
+                    <CardContent sx={{ p: 2 }}>
+                      <Button
+                        fullWidth
+                        variant="text"
+                        onClick={logout}
+                        startIcon={<LogoutIcon sx={{ color: "#EF4444" }} />}
+                        sx={{
                           justifyContent: "flex-start",
-                          textAlign: "left",
-                          minHeight: 52,
+                          px: 2.5,
+                          py: 1.5,
                           borderRadius: "14px",
                           textTransform: "none",
                           fontWeight: 600,
                           fontSize: "0.9rem",
-                          color: "#6B7280",
-                          px: 2.5,
-                          py: 1.5,
-                          mb: 0.5,
-                          display: "flex",
-                          flexDirection: "row",
-                          gap: 1.5,
-                          transition: "all 0.2s ease-in-out",
-                          "&.Mui-selected": {
-                            color: "#635BFF",
-                            backgroundColor: "#F5F3FF",
-                            "& .MuiSvgIcon-root": { color: "#635BFF" },
-                          },
-                          "& .MuiSvgIcon-root": { color: "#9CA3AF", transition: "color 0.2s" },
+                          color: "#EF4444",
                           "&:hover": {
-                            backgroundColor: "#FAFAFC",
-                            color: "#1F2937",
-                            "& .MuiSvgIcon-root": { color: "#1F2937" },
-                          },
-                        },
-                      }}
-                    >
-                      <Tab icon={<PersonOutlineIcon sx={{ fontSize: 20 }} />} iconPosition="start" label="Personal Details" />
-                      <Tab icon={<LocationOnOutlinedIcon sx={{ fontSize: 20 }} />} iconPosition="start" label="Saved Addresses" />
-                      <Tab icon={<HistoryIcon sx={{ fontSize: 20 }} />} iconPosition="start" label="Booking History" />
-                      <Tab icon={<SecurityIcon sx={{ fontSize: 20 }} />} iconPosition="start" label="Security & Password" />
-                    </Tabs>
-                  </CardContent>
-                </Card>
+                            backgroundColor: "#FEF2F2",
+                          }
+                        }}
+                      >
+                        Logout
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </>
               ) : (
-                /* Premium 2x2 Grid of Icon Cards on Mobile for high tapability and visibility */
-                <Grid container spacing={1.5} sx={{ mb: 2 }}>
-                  {[
-                    { label: "Personal Details", icon: <PersonOutlineIcon /> },
-                    { label: "Saved Addresses", icon: <LocationOnOutlinedIcon /> },
-                    { label: "Booking History", icon: <HistoryIcon /> },
-                    { label: "Security & Pass", icon: <SecurityIcon /> },
-                  ].map((item, idx) => {
-                    const isSelected = activeTab === idx;
-                    return (
-                      <Grid size={{ xs: 6 }} key={idx}>
-                        <Button
-                          fullWidth
-                          onClick={() => setActiveTab(idx)}
-                          variant={isSelected ? "contained" : "outlined"}
-                          startIcon={item.icon}
-                          sx={{
-                            height: 60,
-                            borderRadius: "16px",
-                            textTransform: "none",
-                            fontWeight: 700,
-                            fontSize: "0.825rem",
-                            boxShadow: isSelected ? "0 8px 20px rgba(99, 91, 255, 0.25)" : "none",
-                            bgcolor: isSelected ? "#635BFF" : "#FFFFFF",
-                            color: isSelected ? "#FFFFFF" : "#4B5563",
-                            borderColor: isSelected ? "transparent" : "#E5E7EB",
-                            justifyContent: "center",
-                            gap: 0.5,
-                            "& .MuiButton-startIcon": {
-                              marginRight: 0,
-                              color: isSelected ? "#FFFFFF" : "#635BFF"
-                            },
-                            "&:hover": {
-                              bgcolor: isSelected ? "#4F46E5" : "#FAFAFC",
-                              borderColor: isSelected ? "transparent" : "#D1D5DB"
-                            }
-                          }}
-                        >
-                          {item.label}
-                        </Button>
-                      </Grid>
-                    );
-                  })}
-                </Grid>
+                /* Premium 2x2 Grid of Icon Cards on Mobile + Logout button */
+                <Box sx={{ mb: 3 }}>
+                  <Grid container spacing={1.5} sx={{ mb: 1.5 }}>
+                    {[
+                      { label: "Personal Details", icon: <PersonOutlineIcon /> },
+                      { label: "Saved Addresses", icon: <LocationOnOutlinedIcon /> },
+                      { label: "Booking History", icon: <HistoryIcon /> },
+                      { label: "Security & Pass", icon: <SecurityIcon /> },
+                    ].map((item, idx) => {
+                      const isSelected = activeTab === idx;
+                      return (
+                        <Grid size={{ xs: 6 }} key={idx}>
+                          <Button
+                            fullWidth
+                            onClick={() => setActiveTab(idx)}
+                            variant={isSelected ? "contained" : "outlined"}
+                            startIcon={item.icon}
+                            sx={{
+                              height: 60,
+                              borderRadius: "16px",
+                              textTransform: "none",
+                              fontWeight: 700,
+                              fontSize: "0.825rem",
+                              boxShadow: isSelected ? "0 8px 20px rgba(99, 91, 255, 0.25)" : "none",
+                              bgcolor: isSelected ? "#635BFF" : "#FFFFFF",
+                              color: isSelected ? "#FFFFFF" : "#4B5563",
+                              borderColor: isSelected ? "transparent" : "#E5E7EB",
+                              justifyContent: "center",
+                              gap: 0.5,
+                              "& .MuiButton-startIcon": {
+                                marginRight: 0,
+                                color: isSelected ? "#FFFFFF" : "#635BFF"
+                              },
+                              "&:hover": {
+                                bgcolor: isSelected ? "#4F46E5" : "#FAFAFC",
+                                borderColor: isSelected ? "transparent" : "#D1D5DB"
+                              }
+                            }}
+                          >
+                            {item.label}
+                          </Button>
+                        </Grid>
+                      );
+                    })}
+                  </Grid>
+                </Box>
               )}
             </Grid>
 
@@ -926,6 +958,35 @@ export default function ProfilePage() {
                   )}
                 </CardContent>
               </Card>
+
+              {/* Mobile-only Logout button placed below the main content card */}
+              <Box sx={{ display: { xs: "block", md: "none" }, mt: 3 }}>
+                <Button
+                  fullWidth
+                  variant="outlined"
+                  onClick={logout}
+                  startIcon={<LogoutIcon />}
+                  sx={{
+                    height: 50,
+                    borderRadius: "16px",
+                    textTransform: "none",
+                    fontWeight: 700,
+                    fontSize: "0.875rem",
+                    color: "#EF4444",
+                    borderColor: "#FEE2E2",
+                    bgcolor: "#FFF5F5",
+                    "& .MuiButton-startIcon": {
+                      color: "#EF4444",
+                    },
+                    "&:hover": {
+                      bgcolor: "#FEE2E2",
+                      borderColor: "#EF4444",
+                    }
+                  }}
+                >
+                  Logout
+                </Button>
+              </Box>
             </Grid>
           </Grid>
         </Box>

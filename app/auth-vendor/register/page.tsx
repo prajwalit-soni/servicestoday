@@ -437,7 +437,7 @@ export default function VendorRegister() {
             </Box>
 
             <Grid container spacing={4}>
-              <Grid size={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <TextField
                   {...commonTextFieldProps}
                   label="Full Name"
@@ -448,7 +448,7 @@ export default function VendorRegister() {
                 />
               </Grid>
 
-              <Grid size={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <TextField
                   {...commonTextFieldProps}
                   label="Email"
@@ -459,7 +459,7 @@ export default function VendorRegister() {
                 />
               </Grid>
 
-              <Grid size={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <TextField
                   {...commonTextFieldProps}
                   label="Phone Number"
@@ -470,7 +470,7 @@ export default function VendorRegister() {
                 />
               </Grid>
 
-              <Grid size={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <TextField
                   {...commonTextFieldProps}
                   name="password"
@@ -494,7 +494,7 @@ export default function VendorRegister() {
                 />
               </Grid>
 
-              <Grid size={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <FormControl fullWidth variant="standard" sx={{ mt: 1.5, "& .MuiInputLabel-root": { color: "#9CA3AF", fontWeight: 600, fontSize: "14px" } }}>
                   <InputLabel shrink id="role-select-label" sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                     Account Type
@@ -517,7 +517,7 @@ export default function VendorRegister() {
             </Grid>
 
             <Grid container spacing={4} sx={{ mt: 10 }}>
-              <Grid size={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Typography sx={{ mb: 2, color: "#374151" }}>Area Type</Typography>
                 <Box sx={{ display: "flex", gap: 2 }}>
                   <Box
@@ -788,7 +788,7 @@ export default function VendorRegister() {
                 </FormControl>
               </Grid>
 
-              <Grid size={{ xs: 6, md: 6 }}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <TextField
                   {...commonTextFieldProps}
                   label="Latitude"
@@ -798,7 +798,7 @@ export default function VendorRegister() {
                 />
               </Grid>
 
-              <Grid size={{ xs: 6, md: 6 }}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <TextField
                   {...commonTextFieldProps}
                   label="Longitude"

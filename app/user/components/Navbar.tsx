@@ -26,6 +26,7 @@ import {
   ListItemText,
   ClickAwayListener,
   Paper,
+  Link as MuiLink,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
@@ -81,6 +82,40 @@ const Navbar = () => {
   const [locationAnchor, setLocationAnchor] = useState<null | HTMLElement>(
     null,
   );
+  const [notificationAnchor, setNotificationAnchor] = useState<null | HTMLElement>(null);
+  const [notifications, setNotifications] = useState([
+    {
+      id: "1",
+      title: "Booking Confirmed",
+      description: "Your Plumbing Solutions booking BK-9051 has been accepted by partner EcoClean.",
+      time: "10 mins ago",
+      isUnread: true,
+    },
+    {
+      id: "2",
+      title: "Deep Cleaning Scheduled",
+      description: "Your Professional Deep Cleaning booking BK-9042 is scheduled for tomorrow at 2:00 PM.",
+      time: "2 hours ago",
+      isUnread: true,
+    },
+    {
+      id: "3",
+      title: "Welcome to Shoptera!",
+      description: "Explore top-rated local services. Need help? Check our Help Center or contact support.",
+      time: "1 day ago",
+      isUnread: false,
+    },
+  ]);
+
+  const handleMarkAllNotificationsRead = () => {
+    setNotifications((prev) => prev.map((n) => ({ ...n, isUnread: false })));
+  };
+
+  const handleToggleNotificationRead = (id: string) => {
+    setNotifications((prev) =>
+      prev.map((n) => (n.id === id ? { ...n, isUnread: !n.isUnread } : n))
+    );
+  };
   const [avatarLoadError, setAvatarLoadError] = useState(false);
   const [greeting, setGreeting] = useState("Good Morning");
 
@@ -335,9 +370,10 @@ const Navbar = () => {
           {/* Action Icons Panel */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
             <IconButton
+              onClick={(e) => setNotificationAnchor(e.currentTarget)}
               sx={{ color: "#333", "&:hover": { backgroundColor: "#f5f5f5" } }}
             >
-              <Badge badgeContent={3} color="error">
+              <Badge badgeContent={notifications.filter((n) => n.isUnread).length} color="error">
                 <NotificationsIcon />
               </Badge>
             </IconButton>
@@ -460,7 +496,7 @@ const Navbar = () => {
             }}
           >
             <IconButton
-              onClick={() => router.push("/cart")}
+              onClick={(e) => setNotificationAnchor(e.currentTarget)}
               sx={{
                 backgroundColor: "rgba(255, 255, 255, 0.2)",
                 color: "#FFFFFF",
@@ -468,7 +504,7 @@ const Navbar = () => {
                 "&:hover": { backgroundColor: "rgba(255, 255, 255, 0.3)" },
               }}
             >
-              <Badge badgeContent={cartItemCount} color="error">
+              <Badge badgeContent={notifications.filter((n) => n.isUnread).length} color="error">
                 <NotificationsIcon sx={{ fontSize: "1.3rem" }} />
               </Badge>
             </IconButton>
@@ -651,7 +687,7 @@ const Navbar = () => {
           value={getActiveTabValue()}
           onChange={(event, newValue) => {
             if (newValue === 0) router.push("/");
-            if (newValue === 1) router.push("/");
+            if (newValue === 1) router.push("/services");
             if (newValue === 2) router.push("/help");
             if (newValue === 3) {
               if (mounted && user) {
@@ -876,6 +912,77 @@ const Navbar = () => {
               />
             </ListItemButton>
           </ListItem>
+        </List>
+      </Popover>
+
+      {/* Website Notifications Popover */}
+      <Popover
+        open={Boolean(notificationAnchor)}
+        anchorEl={notificationAnchor}
+        onClose={() => setNotificationAnchor(null)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        transformOrigin={{ vertical: "top", horizontal: "right" }}
+        slotProps={{
+          paper: {
+            sx: {
+              width: 320,
+              borderRadius: "16px",
+              boxShadow: "0px 8px 32px rgba(0, 0, 0, 0.08)",
+              mt: 1.5,
+              border: "1px solid #e3e8ef",
+              p: 2.5,
+            },
+          },
+        }}
+      >
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+          <Typography variant="subtitle1" sx={{ fontWeight: 700, color: "#121926", fontSize: "0.95rem" }}>
+            Notifications
+          </Typography>
+          {notifications.some((n) => n.isUnread) && (
+            <MuiLink
+              component="button"
+              variant="caption"
+              underline="hover"
+              onClick={handleMarkAllNotificationsRead}
+              sx={{ color: "#635BFF", fontWeight: 600, textTransform: "none", cursor: "pointer", border: "none", bgcolor: "transparent" }}
+            >
+              Mark all as read
+            </MuiLink>
+          )}
+        </Box>
+        <Divider sx={{ mb: 1 }} />
+        <List sx={{ p: 0, maxHeight: 300, overflowY: "auto" }}>
+          {notifications.map((notif) => (
+            <React.Fragment key={notif.id}>
+              <ListItemButton
+                onClick={() => handleToggleNotificationRead(notif.id)}
+                sx={{
+                  borderRadius: "8px",
+                  p: 1.2,
+                  mb: 0.5,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                  bgcolor: notif.isUnread ? "rgba(99, 91, 255, 0.03)" : "transparent",
+                  "&:hover": { bgcolor: "#f9f9fb" },
+                }}
+              >
+                <Box sx={{ display: "flex", justifyContent: "space-between", width: "100%", mb: 0.5 }}>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 700, color: notif.isUnread ? "#121926" : "#697586", fontSize: "0.825rem" }}>
+                    {notif.title}
+                  </Typography>
+                  <Typography variant="caption" sx={{ color: "#9CA3AF" }}>
+                    {notif.time}
+                  </Typography>
+                </Box>
+                <Typography variant="body2" sx={{ color: notif.isUnread ? "#374151" : "#888888", fontSize: "0.775rem", lineHeight: 1.4, textAlign: "left" }}>
+                  {notif.description}
+                </Typography>
+              </ListItemButton>
+              <Divider sx={{ my: 0.5 }} />
+            </React.Fragment>
+          ))}
         </List>
       </Popover>
     </>

@@ -3,7 +3,7 @@
 import React from "react";
 import { 
   Box, Typography, Button, Stack, Chip, Card, CardContent, 
-  Stepper, Step, StepLabel 
+  Stepper, Step, StepLabel, useMediaQuery, useTheme, LinearProgress
 } from "@mui/material";
 import CustomDataTable, { Column } from "../../admin/components/CustomDataTable";
 import { useAuthStore } from "../../store/useAuthStore";
@@ -12,6 +12,8 @@ import { useBookingStore } from "../../store/useBookingStore";
 const SERVICE_STEPS = ["Accepted", "Agent En-route", "Reached Location", "Work Started", "Completed"];
 
 export default function VendorRequestsPage() {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const { role } = useAuthStore();
   const { bookings, updateStatus } = useBookingStore();
 
@@ -92,7 +94,7 @@ export default function VendorRequestsPage() {
     <Box sx={{ flexGrow: 1 }}>
       {/* Header section with subtitle */}
       <Box sx={{ mb: 4 }}>
-        <Typography variant="h4" sx={{ fontWeight: 700, color: "#111827", mb: 0.5 }}>
+        <Typography variant="h4" sx={{ fontWeight: 700, color: "#111827", mb: 0.5, fontSize: { xs: "1.75rem", sm: "2.125rem" } }}>
           Service Requests & Bookings
         </Typography>
         <Typography variant="body2" sx={{ color: "#6B7280", fontWeight: 500 }}>
@@ -119,7 +121,15 @@ export default function VendorRequestsPage() {
                   "&:hover": { boxShadow: "0 6px 16px rgba(255, 179, 0, 0.12)", transform: "translateY(-2px)" }
                 }}
               >
-                <CardContent sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', p: 3, "&:last-child": { pb: 3 } }}>
+                <CardContent sx={{ 
+                  display: 'flex', 
+                  flexDirection: { xs: 'column', sm: 'row' },
+                  justifyContent: 'space-between', 
+                  alignItems: { xs: 'stretch', sm: 'center' }, 
+                  gap: 2.5,
+                  p: 3, 
+                  "&:last-child": { pb: 3 } 
+                }}>
                   <Box>
                     <Chip label="ACTION REQUIRED" color="warning" size="small" sx={{ fontWeight: 700, fontSize: "9px", mb: 1, borderRadius: "6px" }} />
                     <Typography variant="h6" fontWeight={700} sx={{ color: "#1F2937", mb: 0.5 }}>{booking.serviceType}</Typography>
@@ -127,11 +137,12 @@ export default function VendorRequestsPage() {
                       Customer: <strong>{booking.customerName}</strong> • Requested at: <strong>{booking.date}</strong>
                     </Typography>
                   </Box>
-                  <Stack direction="row" spacing={1.5}>
+                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} sx={{ width: { xs: "100%", sm: "auto" } }}>
                     <Button 
                       size="medium" 
                       variant="contained" 
                       onClick={() => updateStatus(booking.id, "scheduled")}
+                      fullWidth={isMobile}
                       sx={{ 
                         bgcolor: "#10b981", 
                         color: "#fff", 
@@ -149,6 +160,7 @@ export default function VendorRequestsPage() {
                       variant="outlined" 
                       color="error" 
                       onClick={() => updateStatus(booking.id, "declined")}
+                      fullWidth={isMobile}
                       sx={{ 
                         fontWeight: 600, 
                         borderRadius: "30px", 
@@ -189,7 +201,17 @@ export default function VendorRequestsPage() {
               }}
             >
               {/* Header bar on active booking card */}
-              <Box sx={{ bgcolor: "#FAFAFA", px: 3, py: 2, borderBottom: "1px solid #EAEAEA", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <Box sx={{ 
+                bgcolor: "#FAFAFA", 
+                px: 3, 
+                py: 2, 
+                borderBottom: "1px solid #EAEAEA", 
+                display: "flex", 
+                flexDirection: { xs: "column", sm: "row" },
+                justifyContent: "space-between", 
+                alignItems: { xs: "flex-start", sm: "center" },
+                gap: 1.5
+              }}>
                 <Box>
                   <Typography variant="subtitle2" sx={{ color: "#6B7280", textTransform: "uppercase", fontSize: "10px", fontWeight: 700, letterSpacing: "1px" }}>Active Service</Typography>
                   <Typography variant="h6" sx={{ fontWeight: 700, color: "#111827" }}>{booking.serviceType} for {booking.customerName}</Typography>
@@ -198,34 +220,53 @@ export default function VendorRequestsPage() {
                   size="small" 
                   color="error" 
                   onClick={() => updateStatus(booking.id, "cancelled")}
-                  sx={{ textTransform: "none", fontWeight: 600 }}
+                  sx={{ textTransform: "none", fontWeight: 600, width: { xs: "100%", sm: "auto" }, textAlign: { xs: "left", sm: "right" } }}
                 >
                   Cancel Service
                 </Button>
               </Box>
 
               <CardContent sx={{ p: 3 }}>
-                <Stepper 
-                  activeStep={getActiveStep(booking.status)} 
-                  alternativeLabel 
-                  sx={{ 
-                    mb: 4,
-                    "& .MuiStepLabel-label.Mui-active": { color: "#635BFF", fontWeight: 600 },
-                    "& .MuiStepLabel-label.Mui-completed": { color: "#10b981", fontWeight: 500 },
-                    "& .MuiStepIcon-root.Mui-active": { color: "#635BFF" },
-                    "& .MuiStepIcon-root.Mui-completed": { color: "#10b981" }
-                  }}
-                >
-                  {SERVICE_STEPS.map((label) => (
-                    <Step key={label}><StepLabel>{label}</StepLabel></Step>
-                  ))}
-                </Stepper>
+                {!isMobile ? (
+                  <Stepper 
+                    activeStep={getActiveStep(booking.status)} 
+                    alternativeLabel 
+                    sx={{ 
+                      mb: 4,
+                      "& .MuiStepLabel-label.Mui-active": { color: "#635BFF", fontWeight: 600 },
+                      "& .MuiStepLabel-label.Mui-completed": { color: "#10b981", fontWeight: 500 },
+                      "& .MuiStepIcon-root.Mui-active": { color: "#635BFF" },
+                      "& .MuiStepIcon-root.Mui-completed": { color: "#10b981" }
+                    }}
+                  >
+                    {SERVICE_STEPS.map((label) => (
+                      <Step key={label}><StepLabel>{label}</StepLabel></Step>
+                    ))}
+                  </Stepper>
+                ) : (
+                  <Box sx={{ mb: 3, px: 1 }}>
+                    <Typography variant="body2" sx={{ fontWeight: 700, color: "#1F2937", mb: 1 }}>
+                      Current Status: <span style={{ color: "#635BFF" }}>{SERVICE_STEPS[getActiveStep(booking.status)]}</span> (Step {getActiveStep(booking.status) + 1} of 5)
+                    </Typography>
+                    <LinearProgress 
+                      variant="determinate" 
+                      value={((getActiveStep(booking.status) + 1) / 5) * 100} 
+                      sx={{ 
+                        height: 6, 
+                        borderRadius: 3, 
+                        bgcolor: "#E5E7EB",
+                        "& .MuiLinearProgress-bar": { bgcolor: "#635BFF" } 
+                      }} 
+                    />
+                  </Box>
+                )}
 
-                <Box sx={{ display: "flex", justifyContent: 'center' }}>
+                <Box sx={{ display: "flex", justifyContent: 'center', width: "100%" }}>
                   {booking.status === "scheduled" && (
                     <Button 
                       variant="contained" 
                       onClick={() => updateStatus(booking.id, "en-route")}
+                      fullWidth={isMobile}
                       sx={{ bgcolor: "#635BFF", color: "#fff", fontWeight: 600, borderRadius: "30px", px: 4, py: 1.2, textTransform: "none", "&:hover": { bgcolor: "#4F46E5" } }}
                     >
                       Start Journey
@@ -236,6 +277,7 @@ export default function VendorRequestsPage() {
                       variant="contained" 
                       color="secondary" 
                       onClick={() => updateStatus(booking.id, "reached")}
+                      fullWidth={isMobile}
                       sx={{ fontWeight: 600, borderRadius: "30px", px: 4, py: 1.2, textTransform: "none" }}
                     >
                       Reached Location
@@ -246,6 +288,7 @@ export default function VendorRequestsPage() {
                       variant="contained" 
                       color="info" 
                       onClick={() => updateStatus(booking.id, "started")}
+                      fullWidth={isMobile}
                       sx={{ fontWeight: 600, borderRadius: "30px", px: 4, py: 1.2, textTransform: "none" }}
                     >
                       Begin Service
@@ -256,6 +299,7 @@ export default function VendorRequestsPage() {
                       variant="contained" 
                       color="success" 
                       onClick={() => updateStatus(booking.id, "completed")}
+                      fullWidth={isMobile}
                       sx={{ bgcolor: "#10b981", "&:hover": { bgcolor: "#059669" }, fontWeight: 600, borderRadius: "30px", px: 4, py: 1.2, textTransform: "none" }}
                     >
                       Finish & Close

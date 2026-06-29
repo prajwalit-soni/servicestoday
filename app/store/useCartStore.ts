@@ -106,7 +106,7 @@ const useCartStore = create<CartStore>()(
     {
       name: "cart-storage",
     }),
-    { name: "CartStore", enabled: typeof window !== "undefined" }
+    { name: "CartStore" }
   )
 );
 

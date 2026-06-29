@@ -31,7 +31,7 @@ const useDataStore = create<DataStore>()(
         }
       },
     }),
-    { name: "DataStore", enabled: typeof window !== "undefined" }
+    { name: "DataStore" }
   )
 );
 

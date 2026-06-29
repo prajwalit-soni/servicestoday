@@ -151,6 +151,6 @@ export const useAuthStore = create<AuthStore>()(
         error: null,
       }),
     }),
-    { name: "AuthStore", enabled: typeof window !== "undefined" }
+    { name: "AuthStore" }
   )
 );

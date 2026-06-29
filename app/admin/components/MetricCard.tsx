@@ -80,7 +80,8 @@ export default function MetricCard({ type, title, value, icon }: MetricCardProps
         display: "flex",
         alignItems: "center",
         gap: 2,
-        height: "calc(50% - 8px)", // Adjust layout for gap stack
+        height: { xs: "auto", md: "calc(50% - 8px)" }, // Adjust layout for gap stack to prevent mobile collapse
+        minHeight: { xs: 80, md: "auto" },
       }}
     >
       <Box
