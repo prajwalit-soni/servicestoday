@@ -41,7 +41,7 @@ const ImageWithFallback = ({
   return (
     <Box
       component="img"
-      src={(imgSrc || fallback) || null}
+      src={imgSrc || fallback || undefined}
       alt={alt}
       onError={() => setImgSrc(fallback)}
       sx={sx}

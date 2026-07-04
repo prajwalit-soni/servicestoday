@@ -246,7 +246,8 @@ export default function NotificationDropdown() {
                     {getIcon(notif.type)}
                   </ListItemAvatar>
                   <ListItemText
-                    component="div"
+                    primaryTypographyProps={{ component: 'div' }}
+                    secondaryTypographyProps={{ component: 'div' }}
                     primary={
                       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                         <Typography variant="subtitle2" component="span" sx={{ fontWeight: 600, color: notif.isUnread ? "#121926" : "#697586" }}>
