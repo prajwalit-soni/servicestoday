@@ -246,22 +246,23 @@ export default function NotificationDropdown() {
                     {getIcon(notif.type)}
                   </ListItemAvatar>
                   <ListItemText
+                    component="div"
                     primary={
                       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        <Typography variant="subtitle2" sx={{ fontWeight: 600, color: notif.isUnread ? "#121926" : "#697586" }}>
+                        <Typography variant="subtitle2" component="span" sx={{ fontWeight: 600, color: notif.isUnread ? "#121926" : "#697586" }}>
                           {notif.title}
                         </Typography>
-                        <Typography variant="caption" sx={{ color: "#9e9e9e" }}>
+                        <Typography variant="caption" component="span" sx={{ color: "#9e9e9e" }}>
                           {notif.time}
                         </Typography>
                       </Box>
                     }
                     secondary={
-                      <Box sx={{ mt: 0.5 }}>
-                        <Typography variant="body2" sx={{ color: notif.isUnread ? "#212121" : "#888888", lineHeight: 1.4, fontSize: "0.825rem" }}>
+                      <Box sx={{ mt: 0.5 }} component="div">
+                        <Typography variant="body2" component="div" sx={{ color: notif.isUnread ? "#212121" : "#888888", lineHeight: 1.4, fontSize: "0.825rem" }}>
                           {notif.description}
                         </Typography>
-                        <Box sx={{ display: "flex", gap: 1, mt: 1 }}>
+                        <Box sx={{ display: "flex", gap: 1, mt: 1 }} component="div">
                           {notif.isUnread && (
                             <Chip label="Unread" size="small" sx={{ bgcolor: "#fff3e0", color: "#e65100", fontWeight: 600, fontSize: "0.65rem", height: 18, borderRadius: "4px" }} />
                           )}

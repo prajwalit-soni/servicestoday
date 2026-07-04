@@ -46,6 +46,7 @@ import StorefrontIcon from "@mui/icons-material/Storefront";
 import useCartStore from "../../store/useCartStore";
 import { useAuthStore } from "../../store/useAuthStore";
 import { services } from "../../lib/servicesData";
+import axiosClient from "../../lib/api";
 
 const getRandomAvatarColor = (alpha = 0.7) => {
   const r = Math.floor(Math.random() * 256);
@@ -65,12 +66,46 @@ const Navbar = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [categories, setCategories] = useState<any[]>([]);
 
-  const matchingServices = services.filter(
-    (service) =>
-      service.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      service.category.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await axiosClient.get("/public/home-categories");
+        if (res.data?.success && Array.isArray(res.data?.data)) {
+          setCategories(res.data.data);
+        }
+      } catch (err) {
+        // Silently handle
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  const mapCategoryToService = (cat: any): any => {
+    const imageUrl = cat.image_path || cat.banner_image_path || cat.icon_path ||
+      "https://images.unsplash.com/photo-1563453392212-326f5e854473?w=400";
+
+    return {
+      id: cat.id || String(Math.random()),
+      name: cat.name,
+      slug: cat.slug || cat.name.toLowerCase().replace(/\s+/g, "-"),
+      category: cat.name,
+      description: cat.description || `Professional ${cat.name} services`,
+      price: cat.price || 499,
+      rating: cat.rating || parseFloat((4.5 + Math.random() * 0.5).toFixed(2)),
+      image: imageUrl,
+      availability: "Available Now"
+    };
+  };
+
+  const matchingServices = categories
+    .map(mapCategoryToService)
+    .filter(
+      (service) =>
+        service.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        service.category.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
   useEffect(() => {
     setMounted(true);
@@ -212,7 +247,7 @@ const Navbar = () => {
 
           {/* Location Selector and Search Bar */}
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            <Box sx={{ alignItems: "center", gap: 1, width: "100%" }}>
+            {/* <Box sx={{ alignItems: "center", gap: 1, width: "100%" }}>
               <Button
                 startIcon={<LocationOnIcon />}
                 onClick={(e) => setLocationAnchor(e.currentTarget)}
@@ -223,7 +258,7 @@ const Navbar = () => {
               >
                 Rajnandgaon , India
               </Button>
-            </Box>
+            </Box> */}
 
             <ClickAwayListener onClickAway={() => setShowSuggestions(false)}>
               <Box sx={{ flex: "none", mx: 4, position: "relative" }}>
@@ -306,13 +341,11 @@ const Navbar = () => {
                     ) : (
                       <List sx={{ p: 0 }}>
                         {matchingServices.map((service) => {
-                          const categoryKey = service.category.toLowerCase().replace(/\s+/g, '-');
-                          const detailId = categoryKey === 'beautician' ? 'salon' : categoryKey;
                           return (
                             <ListItemButton
                               key={service.id}
                               onClick={() => {
-                                router.push(`/services/${detailId}`);
+                                router.push(`/services/${service.slug}`);
                                 setShowSuggestions(false);
                               }}
                               sx={{
@@ -338,7 +371,7 @@ const Navbar = () => {
                                 }}
                               >
                                 <img
-                                  src={service.image}
+                                  src={service.image || "/assets/images/Image-alt.jpg"}
                                   alt={service.name}
                                   style={{ width: "100%", height: "100%", objectFit: "cover" }}
                                 />
@@ -605,13 +638,11 @@ const Navbar = () => {
                 ) : (
                   <List sx={{ p: 0 }}>
                     {matchingServices.map((service) => {
-                      const categoryKey = service.category.toLowerCase().replace(/\s+/g, '-');
-                      const detailId = categoryKey === 'beautician' ? 'salon' : categoryKey;
                       return (
                         <ListItemButton
                           key={service.id}
                           onClick={() => {
-                            router.push(`/services/${detailId}`);
+                            router.push(`/services/${service.slug}`);
                             setShowSuggestions(false);
                           }}
                           sx={{
@@ -637,7 +668,7 @@ const Navbar = () => {
                             }}
                           >
                             <img
-                              src={service.image}
+                              src={service.image || "/assets/images/Image-alt.jpg"}
                               alt={service.name}
                               style={{ width: "100%", height: "100%", objectFit: "cover" }}
                             />

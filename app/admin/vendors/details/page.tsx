@@ -337,35 +337,35 @@ export default function VendorDetailsPage() {
                 </Grid>
                 <Grid size={{ xs: 12, sm: 4 }} sx={{ mt: 2 }}>
                   <Typography variant="caption" sx={{ color: "#757575" }}>
-                    State ID
+                    State
                   </Typography>
                   <Typography
                     variant="body1"
                     sx={{ fontWeight: 500, color: "#212121", mt: 0.5 }}
                   >
-                    {vendor.state_id || "N/A"}
+                    {vendor.state_name || vendor.state_id || "N/A"}
                   </Typography>
                 </Grid>
                 <Grid size={{ xs: 12, sm: 4 }} sx={{ mt: 2 }}>
                   <Typography variant="caption" sx={{ color: "#757575" }}>
-                    District ID
+                    District
                   </Typography>
                   <Typography
                     variant="body1"
                     sx={{ fontWeight: 500, color: "#212121", mt: 0.5 }}
                   >
-                    {vendor.district_id || "N/A"}
+                    {vendor.district_name || vendor.district_id || "N/A"}
                   </Typography>
                 </Grid>
                 <Grid size={{ xs: 12, sm: 4 }} sx={{ mt: 2 }}>
                   <Typography variant="caption" sx={{ color: "#757575" }}>
-                    City ID
+                    City
                   </Typography>
                   <Typography
                     variant="body1"
                     sx={{ fontWeight: 500, color: "#212121", mt: 0.5 }}
                   >
-                    {vendor.city_id || "N/A"}
+                    {vendor.city_name || vendor.city_id || "N/A"}
                   </Typography>
                 </Grid>
               </Grid>

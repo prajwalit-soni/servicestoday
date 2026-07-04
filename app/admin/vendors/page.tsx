@@ -16,6 +16,7 @@ import AddVendorForm from "./components/Form";
 import { UserService, type UserVendorData } from "../../lib/services/userService";
 import { toast } from "react-toastify";
 
+
 export type { UserVendorData };
 
 export default function DashboardHome() {

@@ -15,8 +15,8 @@ export interface ApiCategory {
 }
 
 export const CategoryService = {
-  async getAll(): Promise<ApiCategory[]> {
-    const response = await axiosClient.get("/categories/admin");
+  async getAll(params?: { page?: number; limit?: number; sort_dir?: string }): Promise<any> {
+    const response = await axiosClient.get("/categories/admin", { params });
     return response.data;
   },
 

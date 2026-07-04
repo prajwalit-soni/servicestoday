@@ -11,6 +11,7 @@ import {
   InputAdornment,
   Stack,
   Chip,
+  CircularProgress,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from "@mui/icons-material/Clear";
@@ -19,12 +20,18 @@ import {
   services,
   serviceCategories,
   Service,
+  getCategoryIconByName,
 } from "../lib/servicesData";
+import axiosClient from "../lib/api";
+import ImageWithFallback from "../components/ImageWithFallback";
 
 const ServicesPage = () => {
   const router = useRouter();
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [categories, setCategories] = useState<any[]>([]);
+  const [apiServices, setApiServices] = useState<Service[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -36,7 +43,55 @@ const ServicesPage = () => {
     }
   }, []);
 
-  const filteredServices = services.filter((service) => {
+  // Helper to map API Subcategory to Service object
+  const mapApiSubcategoryToService = (sub: any, parentCategoryName: string): Service => {
+    return {
+      id: sub.id,
+      name: sub.name,
+      category: parentCategoryName,
+      description: sub.description || `Professional ${sub.name} services`,
+      price: sub.price || 499, // default fallback price
+      originalPrice: sub.original_price || undefined,
+      rating: sub.rating || 4.8, // default rating
+      reviewCount: sub.review_count || 120,
+      image: sub.image_path || sub.image || "https://images.unsplash.com/photo-1563453392212-326f5e854473?w=400",
+      availability: "Available Now"
+    };
+  };
+
+  // Fetch categories and all subcategories from the public API on mount
+  useEffect(() => {
+    const fetchCategories = async () => {
+      setLoading(true);
+      try {
+        const res = await axiosClient.get("/public/categories");
+        if (res.data?.success && Array.isArray(res.data?.data)) {
+          const fetchedCats = res.data.data;
+          setCategories(fetchedCats);
+          
+          // Map all subcategories (children) from all categories to a single flat service array
+          const allServices: Service[] = [];
+          fetchedCats.forEach((cat: any) => {
+            const children = cat.children || [];
+            children.forEach((child: any) => {
+              allServices.push(mapApiSubcategoryToService(child, cat.name));
+            });
+          });
+          setApiServices(allServices);
+        }
+      } catch (err) {
+        // Silently catch and fall back
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  const activeCategories = categories.length > 0 ? categories : serviceCategories;
+  const sourceServices = apiServices.length > 0 ? apiServices : services;
+
+  const filteredServices = sourceServices.filter((service) => {
     const matchesCategory =
       selectedCategory === "All" || service.category === selectedCategory;
     const matchesSearch =
@@ -143,12 +198,16 @@ const ServicesPage = () => {
                 }
               }}
             />
-            {serviceCategories.map((category) => {
+            {activeCategories.map((category) => {
               const isSelected = selectedCategory === category.name;
               return (
                 <Chip
                   key={category.id}
-                  icon={<span style={{ fontSize: "16px", marginLeft: "4px" }}>{category.icon}</span>}
+                  icon={
+                    <span style={{ fontSize: "16px", marginLeft: "4px" }}>
+                      {category.icon || getCategoryIconByName(category.name)}
+                    </span>
+                  }
                   label={category.name}
                   onClick={() => handleCategoryChange(category.name)}
                   sx={{
@@ -172,7 +231,23 @@ const ServicesPage = () => {
         </Box>
 
         {/* Service Grid - Full Width */}
-        {displayedServices.length === 0 ? (
+        {loading ? (
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              py: 12,
+              gap: 2,
+            }}
+          >
+            <CircularProgress sx={{ color: "#6E42E5" }} size={44} thickness={4} />
+            <Typography sx={{ color: "#757575", fontWeight: 500, fontSize: "14px" }}>
+              Loading services...
+            </Typography>
+          </Box>
+        ) : displayedServices.length === 0 ? (
           <Box
             sx={{
               py: 8,
@@ -278,9 +353,10 @@ const ServicesPage = () => {
                   )}
 
                   {/* Image */}
-                  <img
+                  <ImageWithFallback
                     src={service.image}
                     alt={service.name}
+                    fallback="/assets/images/Image-alt.jpg"
                     style={{
                       width: "100%",
                       height: "100%",

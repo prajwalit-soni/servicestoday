@@ -40,73 +40,12 @@ import { toast } from "react-toastify";
 import { CategoryService, ApiCategory } from "../../lib/services/categoryService";
 import { BannerService, ApiBanner } from "../../lib/services/bannerService";
 
-// --- Dummy Datasets ---
-
-const initialCategories: ApiCategory[] = [
-  {
-    id: 1,
-    name: "Salon & Makeup (Beauty)",
-    slug: "salon-makeup",
-    description: "Professional beauty salon, haircuts, facial, and makeup services at home",
-    sort_order: 1,
-    parent_id: null,
-    is_active: true,
-    image: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=150&auto=format&fit=crop",
-    icon: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=50&auto=format&fit=crop",
-    banner_image: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&auto=format&fit=crop",
-    parent_name: "Root",
-  },
-  {
-    id: 2,
-    name: "Facial & Skincare",
-    slug: "facial-skincare",
-    description: "Premium facial therapy and skincare packages for men and women",
-    sort_order: 2,
-    parent_id: 1,
-    is_active: true,
-    image: "https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?w=150&auto=format&fit=crop",
-    icon: "https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?w=50&auto=format&fit=crop",
-    banner_image: "https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?w=600&auto=format&fit=crop",
-    parent_name: "Salon & Makeup (Beauty)",
-  },
-  {
-    id: 3,
-    name: "AC & Appliance Repair",
-    slug: "ac-appliance-repair",
-    description: "Certified technicians for air conditioner, refrigerator, and washing machine repairs",
-    sort_order: 3,
-    parent_id: null,
-    is_active: true,
-    image: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=150&auto=format&fit=crop",
-    icon: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=50&auto=format&fit=crop",
-    banner_image: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=600&auto=format&fit=crop",
-    parent_name: "Root",
-  },
-];
-
-const initialBanners: ApiBanner[] = [
-  {
-    id: 1,
-    title: "Salon at Home - Flat 30% Off on Premium Facials & Makeup",
-    redirect_url: "/categories/salon-makeup",
-    status_val: "Active",
-    image: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=600&auto=format&fit=crop",
-  },
-  {
-    id: 2,
-    title: "Expert AC Servicing & Gas Charging starting at ₹299",
-    redirect_url: "/categories/ac-appliance-repair",
-    status_val: "Active",
-    image: "https://images.unsplash.com/photo-1581094288338-2314dddb7ecc?w=600&auto=format&fit=crop",
-  },
-];
-
 export default function WebsiteDashboard() {
   const [activeTab, setActiveTab] = useState(0);
 
   // States for CRUD datasets
-  const [categories, setCategories] = useState<ApiCategory[]>(initialCategories);
-  const [banners, setBanners] = useState<ApiBanner[]>(initialBanners);
+  const [categories, setCategories] = useState<ApiCategory[]>([]);
+  const [banners, setBanners] = useState<ApiBanner[]>([]);
 
   // Loading states
   const [isLoading, setIsLoading] = useState(false);
@@ -148,16 +87,42 @@ export default function WebsiteDashboard() {
         BannerService.getAll(),
       ]);
 
-      if (categoriesRes.status === "fulfilled" && categoriesRes.value && categoriesRes.value.length > 0) {
-        setCategories(categoriesRes.value);
+      if (categoriesRes.status === "fulfilled" && categoriesRes.value) {
+        const rawRes = categoriesRes.value as any;
+        const rawCategories = Array.isArray(rawRes)
+          ? rawRes
+          : (rawRes.data || []);
+
+        // Map flat categories list from backend, identifying subcategories by parent status
+        const flatCategories: ApiCategory[] = rawCategories.map((item: any) => ({
+          id: item.id,
+          name: item.name,
+          slug: item.slug,
+          description: item.description || "",
+          sort_order: item.sort_order,
+          parent_id: item.parent_id,
+          is_active: item.is_active,
+          image: item.image_path || item.image,
+          icon: item.icon_path || item.icon,
+          banner_image: item.banner_image_path || item.banner_image,
+          parent_name: item.parent ? item.parent.name : "Root"
+        }));
+        setCategories(flatCategories);
+      } else {
+        const reason = categoriesRes.status === "rejected" ? categoriesRes.reason : null;
+        console.warn("Backend categories API returned 502 Bad Gateway or is offline:", reason?.message || reason);
+        toast.error("Failed to load backend categories (Server Offline 502).");
       }
 
-      if (bannersRes.status === "fulfilled" && bannersRes.value && bannersRes.value.length > 0) {
-        setBanners(bannersRes.value);
+      if (bannersRes.status === "fulfilled" && bannersRes.value) {
+        const rawBannersRes = bannersRes.value as any;
+        const rawBanners = Array.isArray(rawBannersRes)
+          ? rawBannersRes
+          : (rawBannersRes.data || []);
+        setBanners(rawBanners);
       }
     } catch (err) {
-      console.error("Error fetching website configuration:", err);
-      toast.error("Failed to load backend website settings.");
+      // Silently catch general errors
     } finally {
       setIsLoading(false);
     }
@@ -186,7 +151,7 @@ export default function WebsiteDashboard() {
   };
 
   const getImageUrl = (url: string | undefined) => {
-    if (!url) return "";
+    if (!url) return undefined;
     if (url.startsWith("http") || url.startsWith("data:")) return url;
     return `https://shoptera-backend.onrender.com${url.startsWith("/") ? "" : "/"}${url}`;
   };
@@ -275,7 +240,7 @@ export default function WebsiteDashboard() {
       render: (r: ApiBanner) => (
         <Box
           component="img"
-          src={getImageUrl(r.image)}
+          src={getImageUrl(r.image_path || r.image)}
           sx={{
             width: 120,
             height: 50,
@@ -296,10 +261,10 @@ export default function WebsiteDashboard() {
     },
     { id: "redirect_url", label: "Redirect URL", width: "220px" },
     {
-      id: "status_val",
+      id: "status",
       label: "Status",
       width: "120px",
-      render: (r: ApiBanner) => getStatusChip(r.status_val),
+      render: (r: ApiBanner) => getStatusChip(r.status),
     },
   ];
 
@@ -333,7 +298,7 @@ export default function WebsiteDashboard() {
       setFormValues({
         title: "",
         redirect_url: "",
-        status_val: "Active",
+        status: "Active",
       });
     }
     setIsFormOpen(true);
@@ -433,7 +398,7 @@ export default function WebsiteDashboard() {
         // Banner Form Data
         formData.append("title", formValues.title || "");
         formData.append("redirect_url", formValues.redirect_url || "");
-        formData.append("status_val", formValues.status_val || "Active");
+        formData.append("status", formValues.status ? formValues.status.toLowerCase() : "active");
 
         if (bannerImage) formData.append("image", bannerImage);
 
@@ -488,8 +453,8 @@ export default function WebsiteDashboard() {
     } else {
       return {
         total: banners.length,
-        active: banners.filter((b) => b.status_val === "Active").length,
-        inactive: banners.filter((b) => b.status_val === "Inactive").length,
+        active: banners.filter((b) => b.status?.toLowerCase() === "active").length,
+        inactive: banners.filter((b) => b.status?.toLowerCase() === "inactive").length,
         labelActive: "Active Banners",
         labelInactive: "Inactive Banners",
         labelTotal: "Total Banners",
@@ -963,12 +928,12 @@ export default function WebsiteDashboard() {
                     <FormControl fullWidth>
                       <InputLabel>Status</InputLabel>
                       <Select
-                        value={formValues.status_val || "Active"}
+                        value={formValues.status ? formValues.status.toLowerCase() : "active"}
                         label="Status"
-                        onChange={(e) => setFormValues({ ...formValues, status_val: e.target.value })}
+                        onChange={(e) => setFormValues({ ...formValues, status: e.target.value })}
                       >
-                        <MenuItem value="Active">Active</MenuItem>
-                        <MenuItem value="Inactive">Inactive</MenuItem>
+                        <MenuItem value="active">Active</MenuItem>
+                        <MenuItem value="inactive">Inactive</MenuItem>
                       </Select>
                     </FormControl>
                   </Grid>
@@ -1005,10 +970,10 @@ export default function WebsiteDashboard() {
                           }
                         }}
                       />
-                      {getFilePreview(bannerImage, formValues.image) ? (
+                      {getFilePreview(bannerImage, formValues.image_path || formValues.image) ? (
                         <Box
                           component="img"
-                          src={getFilePreview(bannerImage, formValues.image)}
+                          src={getFilePreview(bannerImage, formValues.image_path || formValues.image)}
                           sx={{ width: "100%", maxHeight: 150, objectFit: "contain", borderRadius: "8px" }}
                         />
                       ) : (

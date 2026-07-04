@@ -9,6 +9,7 @@ export interface ServiceDetail {
   categories: ServiceCategory[];
   offers: Offer[];
   trustMarkers: string[];
+  description?: string;
 }
 
 export interface ServiceCategory {

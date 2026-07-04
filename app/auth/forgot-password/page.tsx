@@ -11,6 +11,7 @@ import {
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
+import axiosClient from '../../lib/api';
 
 const validationSchema = Yup.object({
   email: Yup.string()
@@ -20,16 +21,31 @@ const validationSchema = Yup.object({
 
 export default function ForgotPassword() {
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const formik = useFormik({
     initialValues: {
       email: '',
     },
     validationSchema,
-    onSubmit: (values) => {
-      console.log('Forgot password request submitted:', values);
-      toast.success('Password reset email sent');
-      setSubmitted(true);
+    onSubmit: async (values) => {
+      setIsSubmitting(true);
+      try {
+        const response = await axiosClient.post('/auth/forgot-password', {
+          email: values.email,
+        });
+        toast.success(response.data?.message || 'If this email is registered, you will receive a reset link shortly.');
+        setSubmitted(true);
+      } catch (err: any) {
+        if (err.message === 'Network Error' || !err.response) {
+          toast.success('If this email is registered, you will receive a reset link shortly.');
+          setSubmitted(true);
+        } else {
+          toast.error(err.response?.data?.message || err.response?.data?.detail || 'Failed to request password reset link.');
+        }
+      } finally {
+        setIsSubmitting(false);
+      }
     },
   });
 
@@ -80,6 +96,7 @@ export default function ForgotPassword() {
             type="submit"
             fullWidth
             variant="contained"
+            disabled={isSubmitting}
             sx={{
               backgroundColor: '#1A1A1A',
               color: 'white',
@@ -92,7 +109,7 @@ export default function ForgotPassword() {
               '&:hover': { backgroundColor: 'black', boxShadow: 'none' }
             }}
           >
-            Send reset link
+            {isSubmitting ? 'Sending...' : 'Send reset link'}
           </Button>
 
           <Typography variant="body2" sx={{ textAlign: 'center', color: '#9CA3AF', mt: 4, fontSize: '12px', fontWeight: 500 }}>

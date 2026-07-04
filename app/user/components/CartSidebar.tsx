@@ -82,7 +82,7 @@ const CartSidebar: React.FC = () => {
         </Box>
       </Box>
 
-      {/* UC Promise Section */}
+      {/* ST Promise Section */}
       <Box
         sx={{
           bgcolor: "white",
@@ -99,7 +99,7 @@ const CartSidebar: React.FC = () => {
             color: "#0F0F0F",
           }}
         >
-          UC Promise
+          ST Promise
         </Typography>
         <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
           {[

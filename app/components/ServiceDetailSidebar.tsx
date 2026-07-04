@@ -44,6 +44,19 @@ const ServiceDetailSidebar: React.FC<ServiceDetailSidebarProps> = ({
           {service.name}
         </Typography>
 
+        {service.description && (
+          <Typography
+            sx={{
+              fontSize: "14px",
+              color: "#757575",
+              mb: 2,
+              lineHeight: "20px",
+            }}
+          >
+            {service.description}
+          </Typography>
+        )}
+
         {/* Rating */}
         <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
           <StarIcon sx={{ color: "#0F0F0F", fontSize: 20 }} />

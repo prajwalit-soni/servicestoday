@@ -9,8 +9,11 @@ export interface UserVendorData {
   is_active: boolean;
   role: string;
   state_id: number;
+  state_name?: string;
   district_id: number;
+  district_name?: string;
   city_id: number;
+  city_name?: string;
   gram_panchayat?: string;
   address: string;
   pin_no: string;

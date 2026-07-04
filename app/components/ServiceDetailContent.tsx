@@ -17,18 +17,18 @@ const ServiceDetailContent = forwardRef<HTMLDivElement, ServiceDetailContentProp
   ({ service }, ref) => {
     const [carouselIndex, setCarouselIndex] = useState(0);
 
-    // Sample carousel images
+    // Dynamic carousel images based on loaded category
     const carouselImages = [
       {
-        image: "/assets/images/placeholder-banner.svg",
-        title: "Premium Beauty Services at Home",
-        description: "Get salon-quality services in the comfort of your home",
+        image: service.image || "/assets/images/placeholder-banner.svg",
+        title: `Premium ${service.name} Services at Home`,
+        description: `Get professional ${service.name.toLowerCase()} services in the comfort of your home`,
         cta: "Book Now",
       },
       {
         image: "/assets/images/placeholder-banner.svg",
         title: "Expert Professionals",
-        description: "Trained and verified beauty experts",
+        description: `Trained and verified ${service.name.toLowerCase()} experts`,
         cta: "Learn More",
       },
       {

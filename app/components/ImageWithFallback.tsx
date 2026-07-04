@@ -18,16 +18,30 @@ const ImageWithFallback = ({
   sx,
   style,
 }: ImageWithFallbackProps) => {
-  const [imgSrc, setImgSrc] = useState(src);
+  const getFullUrl = (url: string) => {
+    if (!url) return "";
+    if (
+      url.startsWith("http") ||
+      url.startsWith("data:") ||
+      url.startsWith("/assets") ||
+      url.startsWith("blob:")
+    ) {
+      return url;
+    }
+    const backendUrl = "https://shoptera-backend.onrender.com";
+    return `${backendUrl}${url.startsWith("/") ? "" : "/"}${url}`;
+  };
+
+  const [imgSrc, setImgSrc] = useState(getFullUrl(src));
 
   useEffect(() => {
-    setImgSrc(src);
+    setImgSrc(getFullUrl(src));
   }, [src]);
 
   return (
     <Box
       component="img"
-      src={imgSrc}
+      src={(imgSrc || fallback) || null}
       alt={alt}
       onError={() => setImgSrc(fallback)}
       sx={sx}

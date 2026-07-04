@@ -350,7 +350,7 @@ export default function AddVendorForm({ onSuccessClose, initialValues, mode = "a
         >
           {/* Input Fields */}
           <Grid container spacing={4}>
-            <Grid size={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <TextField
                 {...commonTextFieldProps}
                 label="Full Name"
@@ -361,7 +361,7 @@ export default function AddVendorForm({ onSuccessClose, initialValues, mode = "a
               />
             </Grid>
 
-            <Grid size={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <TextField
                 {...commonTextFieldProps}
                 label="Email"
@@ -372,7 +372,7 @@ export default function AddVendorForm({ onSuccessClose, initialValues, mode = "a
               />
             </Grid>
 
-            <Grid size={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <TextField
                 {...commonTextFieldProps}
                 label="Phone Number"
@@ -382,7 +382,7 @@ export default function AddVendorForm({ onSuccessClose, initialValues, mode = "a
                 helperText={formik.touched.phone && typeof formik.errors.phone === "string" ? formik.errors.phone : ""}
               />
             </Grid>
-            <Grid size={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <TextField
                 {...commonTextFieldProps}
                 name="password"
@@ -417,7 +417,7 @@ export default function AddVendorForm({ onSuccessClose, initialValues, mode = "a
           </Grid>
 
           <Grid container spacing={4} sx={{ mt: 10 }}>
-            <Grid size={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Typography
                 sx={{
                   mb: 2,
@@ -833,7 +833,7 @@ export default function AddVendorForm({ onSuccessClose, initialValues, mode = "a
                 ))}
               </TextField>
             </Grid>
-            <Grid size={{ xs: 6, md: 6 }}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <TextField
                 {...commonTextFieldProps}
                 label="Latitude"
@@ -843,7 +843,7 @@ export default function AddVendorForm({ onSuccessClose, initialValues, mode = "a
               />
             </Grid>
 
-            <Grid size={{ xs: 6, md: 6 }}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <TextField
                 {...commonTextFieldProps}
                 label="Longitude"

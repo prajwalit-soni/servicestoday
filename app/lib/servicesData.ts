@@ -577,3 +577,49 @@ export const serviceProviders: ServiceProvider[] = [
     tags: ["Safe Treatment", "Warranty"],
   },
 ];
+
+export const getCategoryIconByName = (name: string): string => {
+  if (!name) return "🛠️";
+  const normalized = name.toLowerCase().trim();
+  switch (normalized) {
+    case "plumber":
+    case "plumbing":
+      return "🔧";
+    case "electrician":
+    case "electrical":
+      return "⚡";
+    case "beautician":
+    case "beauty":
+      return "💅";
+    case "ac repair":
+    case "ac service":
+      return "❄️";
+    case "carpenter":
+    case "carpentry":
+      return "🪚";
+    case "cleaning":
+      return "🧹";
+    case "painter":
+    case "painting":
+      return "🎨";
+    case "pest control":
+      return "🐜";
+    case "salon for women":
+      return "💇‍♀️";
+    case "salon for men":
+      return "💈";
+    case "massage & spa":
+    case "massage":
+    case "spa":
+      return "🧖";
+    case "appliance repair":
+      return "🔌";
+    case "home security":
+      return "🔒";
+    case "gardening":
+      return "🌱";
+    default:
+      return "🛠️";
+  }
+};
+

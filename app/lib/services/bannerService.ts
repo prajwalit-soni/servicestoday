@@ -4,8 +4,9 @@ export interface ApiBanner {
   id: number;
   title: string;
   redirect_url: string;
-  status_val: string;
+  status: string;
   image?: string;
+  image_path?: string;
   created_at?: string;
   updated_at?: string;
 }

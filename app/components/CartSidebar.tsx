@@ -44,45 +44,43 @@ const CartSidebar: React.FC = () => {
               width: 48,
               height: 48,
               borderRadius: "50%",
-              bgcolor: "#EDF7F2",
+              bgcolor: "#F5F5F5",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <LocalOfferIcon sx={{ color: "#05945B", fontSize: 24 }} />
+            <LocalOfferIcon sx={{ color: "#757575", fontSize: 24 }} />
           </Box>
           <Box sx={{ flex: 1 }}>
-            <Typography sx={{ fontWeight: 600, fontSize: "14px", mb: 0.5 }}>
+            <Typography sx={{ fontWeight: 600, fontSize: "14px", mb: 0.5, color: "#757575" }}>
               Apply coupon
             </Typography>
-            <Typography sx={{ fontSize: "12px", color: "#757575" }}>
+            <Typography sx={{ fontSize: "12px", color: "#9E9E9E" }}>
               Get up to 50% off
             </Typography>
           </Box>
           <Button
             variant="outlined"
+            disabled
             sx={{
               textTransform: "none",
               fontWeight: 600,
-              fontSize: "14px",
-              color: "#6E42E5",
-              borderColor: "#6E42E5",
+              fontSize: "12px",
+              color: "#757575 !important",
+              borderColor: "#E0E0E0 !important",
               borderRadius: "8px",
-              px: 2,
+              px: 1.5,
               py: 0.75,
-              "&:hover": {
-                borderColor: "#5932C8",
-                bgcolor: "#EEE7FC",
-              },
+              bgcolor: "transparent !important",
             }}
           >
-            Apply
+            Coming soon
           </Button>
         </Box>
       </Box>
 
-      {/* UC Promise Section */}
+      {/* ST Promise Section */}
       <Box
         sx={{
           bgcolor: "white",
@@ -99,7 +97,7 @@ const CartSidebar: React.FC = () => {
             color: "#0F0F0F",
           }}
         >
-          UC Promise
+          ST Promise
         </Typography>
         <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
           {[
